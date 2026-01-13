@@ -13,13 +13,13 @@ jobs:
           nix_conf: |
             keep-env-derivations = true
             keep-outputs = true
+            # Dica: Adicione isso para o Nix não reclamar de permissão ao usar caches
+            access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
 
-      - uses: nix-community/cache-nix-action@v6
+      - uses: cachix/cachix-action@v15
         with:
-          primary-key: nix-${{ runner.os }}-${{ hashFiles('**/*.nix', 'flake.lock') }}
-          restore-prefixes-first-match: nix-${{ runner.os }}-
-          gc-max-store-size-linux: 1G
-          purge: true
+          name: viitorags
+          authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
+      # -------------------------------
 
-      # 3. Seus comandos de build (ex: nix build, nix flake check)
       - run: nix build .
